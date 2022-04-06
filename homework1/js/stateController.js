@@ -160,8 +160,9 @@ var StateController = function ( dispParams ) {
 	function computeMovement( x, y, previousPosition ) {
 
 		/* TODO (2.1.1.1) Mouse Movement */
-
-		return new THREE.Vector2();
+		var output = new THREE.Vector2(x - previousPosition.x, y - previousPosition.y);
+		previousPosition.set(x, y);
+		return output;
 
 	}
 
@@ -192,17 +193,22 @@ var StateController = function ( dispParams ) {
 
 		// Check if the shift-key is pressed
 		if ( e.shiftKey && ! ctrlKey ) {
-
 			// XY translation
+			var trans = new THREE.Vector3(movement.x, -movement.y, 0);
+			_this.state.modelTranslation.add(trans);
+
 
 		} else if ( ! e.shiftKey && ctrlKey ) {
-
+			var trans = new THREE.Vector3(0, 0, -movement.y);
+			_this.state.modelTranslation.add(trans);
 			// Z translation
 
 
 		} else {
 
 			// Rotation
+			var rotation = new Three.Vector3(movement.x, -movement.y, 0);
+			_this.state.modelRotation.add(rotation);
 
 		}
 
