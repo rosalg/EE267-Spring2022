@@ -233,11 +233,13 @@ var StateController = function ( dispParams ) {
 		if ( ! ctrlKey ) {
 
 			// XY translation
-
+			var translation = new THREE.Vector3(movement.x, -movement.y, 0);
+			_this.state.viewerPosition.add(translation);
 		} else {
 
 			// Z translation
-
+			var translation = new THREE.Vector3(0, 0, -movement.y);
+			_this.state.viewerPosition.add(translation);
 		}
 
 	}
@@ -261,11 +263,14 @@ var StateController = function ( dispParams ) {
 		if ( ! ctrlKey ) {
 
 			// XY translation
+			var translation = new THREE.Vector3(movement.x, -movement.y, 0);
+			_this.state.viewerTarget.add(translation);
 
 		} else {
 
 			// Z translation
-
+			var translation = new THREE.Vector3(0, 0, -movement.y);
+			_this.state.viewerTarget.add(translation);
 		}
 
 	}
@@ -280,6 +285,9 @@ var StateController = function ( dispParams ) {
 	function updateProjectionParams( e, movement ) {
 
 		/* TODO (2.3.1) Implement Perspective Transform */
+		_this.state.clipNear += -movement.y;
+		_this.state.clipNear = Math.max(_this.state.clipNear, 1);
+		console.log(_this.state.clipNear);
 
 	}
 

@@ -47,8 +47,8 @@ var MVPmat = function ( dispParams ) {
 
 		/* TODO (2.1.1.3) Matrix Update / (2.1.2) Model Rotation  */
 		var m = new THREE.Matrix4().makeTranslation(state.modelTranslation.x, state.modelTranslation.y, state.modelTranslation.z);	
-		m.multiply(new THREE.Matrix4().makeRotationY(state.modelRotation.y));
-		m.multiply(new THREE.Matrix4().makeRotationX(state.modelRotation.x));
+		m.multiply(new THREE.Matrix4().makeRotationY(state.modelRotation.y * Math.PI / 180));
+		m.multiply(new THREE.Matrix4().makeRotationX(state.modelRotation.x * Math.PI / 180));
 		return m;
 
 	}
@@ -63,11 +63,20 @@ var MVPmat = function ( dispParams ) {
 	function computeViewTransform( state ) {
 
 		/* TODO (2.2.3) Implement View Transform */
-
+		z_c = new THREE.Vector3().copy(state.viewerPosition).sub(state.viewerTarget);
+		z_c = z_c.divideScalar(state.viewerPosition.distanceTo(state.viewerTarget));
+		up_vector = new THREE.Vector3(0, 1, 0);
+		x_c = new THREE.Vector3().crossVectors(up_vector, z_c);
+		x_c_magnitude = Math.pow(x_c.dot(x_c), 0.5);
+		x_c = x_c.divideScalar(x_c_magnitude);
+		y_c = new THREE.Vector3().crossVectors(z_c, x_c);
+		dot_1 = -x_c.dot(state.viewerPosition);
+		dot_2 = -y_c.dot(state.viewerPosition);
+		dot_3 = -z_c.dot(state.viewerPosition);
 		return new THREE.Matrix4().set(
-			1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, - 800,
+			x_c.x, x_c.y, x_c.z, dot_1,
+			y_c.x, y_c.y, y_c.z, dot_2,
+			z_c.x, z_c.y, z_c.z, dot_3,
 			0, 0, 0, 1 );
 
 	}
@@ -85,10 +94,12 @@ var MVPmat = function ( dispParams ) {
 
 		/* TODO (2.3.1) Implement Perspective Projection */
 
+		prod1 = -(clipFar + clipNear) / (clipFar - clipNear);
+		prod2 = -(2 * clipFar * clipNear) / (clipFar - clipNear);
 		return new THREE.Matrix4().set(
-			6.7, 0, 0, 0,
-			0, 6.5, 0, 0,
-			0, 0, - 1.0, - 2.0,
+			2*clipNear/(right - left), 0, (right + left) / (right - left), 0,
+			0, 2*clipNear/(top - bottom), (top+bottom)/(top-bottom), 0,
+			0, 0, prod1, prod2,
 			0, 0, - 1.0, 0 );
 
 	}
@@ -106,7 +117,12 @@ var MVPmat = function ( dispParams ) {
 
 		/* TODO (2.3.2) Implement Orthographic Projection */
 
-		return new THREE.Matrix4();
+		return new THREE.Matrix4().set(
+			2/(right-left), 0, 0, -(right+left)/(right-left),
+			0, 2/(top-bottom), 0, -(top+bottom)/(top-bottom),
+			0, 0, -2/(clipFar-clipNear), -(clipFar+clipNear)/(clipFar-clipNear),
+			0, 0, 0, 1.0
+		);
 
 	}
 
