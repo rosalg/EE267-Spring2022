@@ -207,7 +207,7 @@ var StateController = function ( dispParams ) {
 		} else {
 
 			// Rotation
-			var rotation = new Three.Vector3(movement.x, -movement.y, 0);
+			var rotation = new THREE.Vector2(-movement.y, movement.x);
 			_this.state.modelRotation.add(rotation);
 
 		}

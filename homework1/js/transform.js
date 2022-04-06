@@ -47,9 +47,9 @@ var MVPmat = function ( dispParams ) {
 
 		/* TODO (2.1.1.3) Matrix Update / (2.1.2) Model Rotation  */
 		var m = new THREE.Matrix4().makeTranslation(state.modelTranslation.x, state.modelTranslation.y, state.modelTranslation.z);	
-		m.applyMatrix4(new THREE.Matrix4().makeRotation());
-
-		return;
+		m.multiply(new THREE.Matrix4().makeRotationY(state.modelRotation.y));
+		m.multiply(new THREE.Matrix4().makeRotationX(state.modelRotation.x));
+		return m;
 
 	}
 
