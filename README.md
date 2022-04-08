@@ -12,3 +12,15 @@ If you prefer the CUI way, you can clone this repository to your local machine t
 git clone https://github.com/computational-imaging/EE267-Spring2022
 ```
 Then, you are good to go! Enjoy the homework! The submission procedure is described in the homework document.
+
+# How to get the following homework (Homework 2~)
+Now, you should have this repository in your local machine. Before pulling the new homework, you need to make a commit of your change in your local repository.
+For example, you can execute
+```shell
+git add --all
+git commit -m "Your message. (eg. Homework 1 is done.)"
+```
+Then, execute
+```shell
+git pull origin master
+```
