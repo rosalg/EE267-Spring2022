@@ -62,6 +62,34 @@ void main() {
 
 	vColor = ambientReflection;
 
+	vec4 temp_vertex_pos = (modelViewMat * vec4(position, 1.0));
+	vec3 vertex_pos = temp_vertex_pos.xyz;
+
+	for (int i = 0; i < NUM_POINT_LIGHTS; i++) {
+		PointLight light = pointLights[i];
+		vec4 temp_light_pos = (viewMat * vec4(light.position, 1.0));
+		vec3 light_pos = temp_light_pos.xyz;
+
+		vec3 L = normalize(light_pos - vertex_pos);
+		vec3 N = normalize(normalMat * normal);
+		
+		// Attenuation
+		float d = length(light_pos - vertex_pos);
+		float atten = 1.0/(attenuation[0] + d*attenuation[1] + d*d*attenuation[2]);
+
+		// Diffuse
+		float max_diffuse = max(dot(L,N), 0.0);
+		vec3 diffuse = max_diffuse * material.diffuse * light.color;
+
+		// Specular 
+		vec3 R = normalize(-reflect(L, N));
+		vec3 V = normalize(-vertex_pos);
+		float max_specular = pow(max(dot(R,V), 0.0), material.shininess);
+		vec3 specular = max_specular * material.specular * light.color;
+
+		vColor += atten * (diffuse + specular);
+	}
+
 	gl_Position =
 		projectionMat * modelViewMat * vec4( position, 1.0 );
 
