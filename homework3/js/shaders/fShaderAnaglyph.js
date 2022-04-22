@@ -28,8 +28,13 @@ uniform sampler2D textureMapL;
 uniform sampler2D textureMapR;
 
 void main() {
+	vec4 left = texture2D(textureMapL, textureCoords);
+    vec4 right = texture2D(textureMapR, textureCoords);
+	
+	float red = 0.2989 *left.x + 0.5870* left.y + 0.1140*left.z;
+    float gb = 0.2989*right.x + 0.5870* right.y + 0.1140*right.z;
 
-	gl_FragColor = texture2D( textureMapL,  textureCoords );
+	gl_FragColor = vec4(red, gb, gb, 1.0);
 
 }
 ` );

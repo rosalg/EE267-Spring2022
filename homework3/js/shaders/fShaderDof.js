@@ -54,9 +54,14 @@ const float searchRad = 11.0;
 float distToFrag( vec2 p ) {
 
 	/* TODO (2.3.1) Distance to Fragment */
+	vec3 ndc = vec3(2.0 * texture2D(textureMap, p).x - 1.0, 
+		2.0 * texture2D(textureMap, p).y - 1.0, 
+		2.0 * texture2D(depthMap, p) - 1.0);
 
-	return 0.0;
-
+	float w_clip = projectionMat[3][2]/(ndc.z + projectionMat[2][2]);
+    vec4 clip = vec4(ndc, 1) * w_clip; //ndc
+    vec4 view = invProjectionMat * clip;
+    return length(view);
 }
 
 
@@ -67,8 +72,7 @@ float computeCoC( float fragDist, float focusDist ) {
 
 	/* TODO (2.3.2) Circle of Confusion Computation */
 
-	return 0.0;
-
+	return pupilDiameter * abs(fragDist - focusDist)/fragDist;
 }
 
 
@@ -76,14 +80,29 @@ float computeCoC( float fragDist, float focusDist ) {
 vec3 computeBlur() {
 
 	/* TODO (2.3.3) Retinal Blur */
-
-	return vec3( 0.0 );
+	float fragDist = distToFrag(textureCoords);
+    float focusDist = distToFrag(gazePosition/windowSize);
+    float blur = computeCoC(fragDist, focusDist);
+    float blurRad = 0.5*blur/pixelPitch;
+	vec4 color = vec4(0.0);
+	float numAdded = 0.0;
+	
+	for(int i = -int(searchRad); i <= int(searchRad); i++ ){
+		for(int j = -int(searchRad); j <= int(searchRad); j++ ){
+			if (blurRad * blurRad > float(i*i + j*j)) {
+				vec2 offset = vec2(float(i)/windowSize.x, float(j)/windowSize.y);
+				color += texture2D(textureMap, textureCoords + offset);
+				numAdded += 1.0; 
+			}
+		}
+	}
+	return color.xyz / numAdded;
 }
 
 
 void main() {
-
-	gl_FragColor = texture2D( textureMap,  textureCoords );
+	vec4 color = vec4(computeBlur(), 1.0);
+	gl_FragColor = color;
 
 }
 ` );

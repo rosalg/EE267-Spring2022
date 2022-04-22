@@ -37,10 +37,10 @@ var FoveatedRenderer = function ( webglRenderer, dispParams ) {
 		dispParams.pixelPitch, dispParams.distanceScreenViewer );
 
 	// Eccentricity angle at which a 4x reduction in resolution is imperceivable
-	var e1 = computeEcc( /* TODO (2.2.3) */ );
+	var e1 = computeEcc( pixelVA * 8 );
 
 	// Eccentricity angle at which a 8x reduction in resolution is imperceivable
-	var e2 = computeEcc( /* TODO (2.2.3) */ );
+	var e2 = computeEcc( pixelVA * 16 );
 
 	var material = new THREE.RawShaderMaterial( {
 
@@ -100,8 +100,8 @@ var FoveatedRenderer = function ( webglRenderer, dispParams ) {
 	function computePixelVA( pixelPitch, distanceScreenViewer ) {
 
 		/* TODO (2.2.1) Visual Angle of a Pixel */
-
-		return 0;
+		var angle = ((2 * Math.atan(pixelPitch/(2*distanceScreenViewer)))* 180) / Math.PI;
+		return angle;
 
 	}
 
@@ -116,8 +116,8 @@ var FoveatedRenderer = function ( webglRenderer, dispParams ) {
 	function computeEcc( mar ) {
 
 		/* TODO (2.2.2) Eccentricity for some MAR */
-
-		return 0;
+		var eccentricity = (mar - (1/48)) / 0.0275
+		return eccentricity;
 
 	}
 

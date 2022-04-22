@@ -52,8 +52,31 @@ uniform float outerBlurKernel[int(outerKernelRad)*2+1];
 
 
 void main() {
+	float currentEcccentricity = length(textureCoords * windowSize - gazePosition) * pixelVA;
 
-	gl_FragColor = texture2D( textureMap,  textureCoords );
+	vec4 color = vec4(0.0);
+	if (currentEcccentricity <= e1){
+		gl_FragColor = texture2D( textureMap,  textureCoords );
+		return;
+	} 
+	else if(currentEcccentricity <= e2){
+		for (int i = -int(middleKernelRad); i <= int(middleKernelRad); i++){
+			for (int j = -int(middleKernelRad); j <= int(middleKernelRad); j++){
+				vec2 offset = vec2(float(i)/windowSize.x, float(j)/windowSize.y);
+				color += middleBlurKernel[int(middleKernelRad) + i] * middleBlurKernel[int(middleKernelRad) + j] * texture2D( textureMap,  textureCoords + offset);
+			}
+		}
+	} else {
+		for (int i = -int(outerKernelRad); i <= int(outerKernelRad); i++){
+			for (int j = -int(outerKernelRad); j <= int(outerKernelRad); j++){
+				vec2 offset = vec2(float(i)/windowSize.x, float(j)/windowSize.y);
+				color += outerBlurKernel[int(outerKernelRad) + i] * outerBlurKernel[int(outerKernelRad) + j] * texture2D( textureMap,  textureCoords + offset);
+			}
+		}
+	}
+
+	color.w = 1.0;
+	gl_FragColor = color;
 
 }
 ` );
