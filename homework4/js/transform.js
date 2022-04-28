@@ -111,9 +111,20 @@ var MVPmat = function ( dispParams ) {
 
 		/* TODO (2.1.2) Stereo Rendering */
 
+		const w1 = dispParams.lensMagnification * dispParams.ipd / 2;
+		const w2 = dispParams.lensMagnification * (dispParams.canvasWidth * dispParams.pixelPitch - dispParams.ipd) / 2;
+
+		var left = clipNear * w1 / dispParams.distanceScreenViewer;
+		var right = clipNear * w2 / dispParams.distanceScreenViewer;
+
+		var top = clipNear * dispParams.lensMagnification * dispParams.canvasHeight * dispParams.pixelPitch / (
+			2 * dispParams.distanceScreenViewer);
+
+		var bottom = -top;
+
 		return {
-			topL: 80, bottomL: - 80, leftL: - 80, rightL: 80,
-			topR: 80, bottomR: - 80, leftR: - 80, rightR: 80,
+			topL: top, bottomL: bottom, leftL: -right, rightL: left,
+			topR: top, bottomR: bottom, leftR: -left, rightR: right,
 		};
 
 	}

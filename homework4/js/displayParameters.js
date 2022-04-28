@@ -70,8 +70,8 @@ var DisplayParameters = function () {
 	function computeLensMagnification() {
 
 		/* TODO (2.1.1) Calculating Parameters of the Magnified Virtual Screen Image */
-
-		return 1;
+		
+		return focalLength / (focalLength - _this.distLensScreen);
 
 	}
 
@@ -86,8 +86,8 @@ var DisplayParameters = function () {
 	function computeDistanceScreenViewer() {
 
 		/* TODO (2.1.1) Calculating Parameters of the Magnified Virtual Screen Image */
-
-		return 1500;
+		var d = (1/focalLength) - (1/_this.distLensScreen);
+		return eyeRelief + Math.abs(1/d);
 
 	}
 
