@@ -243,8 +243,7 @@ void OrientationTracker::updateOrientation() {
   eulerAcc[0] = computeAccPitch(acc);
   eulerAcc[1] = computeAccRoll(acc); 
   //quaternionComp
-
-
+  quaternionComp = updateQuaternionComp(quaternionComp, gyr, acc, deltaT, imuFilterAlpha);
 
 
 }

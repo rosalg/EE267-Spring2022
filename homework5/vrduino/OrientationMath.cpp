@@ -60,6 +60,25 @@ void updateQuaternionGyr(Quaternion& q, double gyr[3], double deltaT) {
 void updateQuaternionComp(Quaternion& q, double gyr[3], double acc[3], double deltaT, double alpha) {
   // q is the previous quaternion estimate
   // update it to be the new quaternion estimate
+  Quaternion q_next = q.clone();
 
+  // i and ii
+  updateQuaternionGyr(q_next, gyr, deltaT);
+
+  // iii
+  Quaternion q_acc(0, acc[0], acc[1], acc[2]);
+
+  // iv
+  Quaternion q_inertial_frame = q_acc.rotate(q_next).normalize();
+
+  // v
+  double phi = acos(q_inertial_frame.q[2]) * 180 / PI;
+
+  // vi
+  double n_mag = sqrt(sq(q_inertial_frame.q[1] + sq(q_inertial_frame.q[3])));
+  Quaternion tilt = Quaternion().setFromAngleAxis((1 - alpha) * phi, -q_inertial_frame.q[3] / n_mag, 0.0, q_inertial_frame.q[1] / n_mag).normalize();
+
+  // vii
+  q = q.multiply(tilt, q_next).normalize();
 
 }
