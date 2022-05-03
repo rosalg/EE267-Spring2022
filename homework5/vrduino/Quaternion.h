@@ -48,6 +48,11 @@ public:
   Quaternion& setFromAngleAxis(double angle, double vx, double vy, double vz) {
 
     //this->q[0] = ...
+    double radian = angle * PI/180;
+    this->q[0] = cos(radian/2);
+    this->q[1] = vx * sin(radian/2);
+    this->q[2] = vy * sin(radian/2);
+    this->q[3] = vz * sin(radian/2);
 
     return *this;
 
@@ -56,7 +61,7 @@ public:
   /* function to compute the length of a quaternion */
   double length() {
 
-    return 0.0;
+    return sqrt(sq(this->q[0]) + sq(this->q[1]) + sq(this->q[2]) + sq(this->q[3]));;
 
   }
 
@@ -64,6 +69,11 @@ public:
   Quaternion& normalize() {
 
     //this->q[0] = ...
+    double length = this->length();
+    this->q[0] = this->q[0]/length;
+    this->q[1] = this->q[1]/length;
+    this->q[2] = this->q[2]/length;
+    this->q[3] = this->q[3]/length;
 
     return *this;
   }
@@ -72,6 +82,11 @@ public:
   Quaternion& inverse() {
 
     //this->q[0] = ...
+    double length_squared = sq(this -> length());
+    this->q[0] = this->q[0]/length_squared;
+    this->q[1] = this->q[1]/-length_squared;
+    this->q[2] = this->q[2]/-length_squared;
+    this->q[3] = this->q[3]/-length_squared;
 
     return *this;
   }
@@ -82,7 +97,10 @@ public:
     Quaternion q;
 
     //q.q[0] = ...
-
+    q.q[0] = a.q[0] * b.q[0] - a.q[1] * b.q[1] - a.q[2] * b.q[2] - a.q[3] * b.q[3]; 
+    q.q[1] = a.q[0] * b.q[1] + a.q[1] * b.q[0] + a.q[2] * b.q[3] - a.q[3] * b.q[2];
+    q.q[2] = a.q[0] * b.q[2] - a.q[1] * b.q[3] + a.q[2] * b.q[0] + a.q[3] * b.q[1]; 
+    q.q[3] = a.q[0] * b.q[3] + a.q[1] * b.q[2] - a.q[2] * b.q[1] + a.q[3] * b.q[0];
 
     return q;
   }
@@ -90,7 +108,8 @@ public:
   /* function to rotate a quaternion by r * q * r^{-1} */
   Quaternion rotate(Quaternion r) {
 
-    return Quaternion();
+    Quaternion rq = this->multiply(r, *this);
+    return this->multiply(rq, r.inverse());
 
   }
 

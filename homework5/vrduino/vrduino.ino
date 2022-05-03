@@ -24,14 +24,14 @@
 
 //complementary filter value [0,1].
 //1: ignore acc tilt, 0: use all acc tilt
-double alphaImuFilter = 0.9;
+double alphaImuFilter = .2;
 
 //if true, get imu values from recorded data in external file
 //if false, get imu values from live sampling.
 bool simulateImu = false;
 
 //if test is true, then run tests in TestOrientation.cpp and exit
-bool test = false;
+bool test = true;
 
 //if measureImuBias is true, measure imu bias and variance
 bool measureImuBias = true;
@@ -68,7 +68,7 @@ const int ACC    = 4;
 const int QC     = 5;
 
 //chose which values you want to stream
-int streamMode = INFO;
+int streamMode = FLAT;
 
 //variables to measure read frequency
 int nReads = 0;
