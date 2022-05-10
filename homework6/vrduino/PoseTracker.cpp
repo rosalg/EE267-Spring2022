@@ -80,11 +80,19 @@ int PoseTracker::updatePose() {
   // and orientation estimates at the end of this function
   //
   // return 0 if errors occur, return 1 if successful
+  convertTicksTo2DPositions(clockTicks, position2D);
 
+  double Aout[8][8];
+  formA(position2D, positionRef, Aout);
 
+  double hOut[8][8];
+  bool inverted = solveForH(Aout, position2D, hOut);
 
+  double r[3][3];
+  getRtFromH(hOut, r, position);
 
+  quaternionHm = getQuaternionFromRotationMatrix(r);
 
-  return 0;
+  return inverted ? 1 : 0;
 
 }
